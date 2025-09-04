@@ -19,7 +19,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAdmin = f
         router.push('/login');
         return;
       }
-      
+
       if (requireAdmin && !isAdmin) {
         router.push('/dashboard');
         return;

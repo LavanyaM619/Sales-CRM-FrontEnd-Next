@@ -82,21 +82,23 @@ export default function OrdersPage() {
   const handleExport = async () => {
     try {
       const response = await orderAPI.getAll(filters); // fetch latest data for export
-      const formattedData = response.data.map(order => ({
-        ...order,
-        amount: parseFloat(order.amount.toString()).toFixed(2),
-      }));
+     const formattedData = response.data.map((order: Order & { amount: string | number }) => ({
+  ...order,
+  amount: parseFloat(order.amount.toString()).toFixed(2),
+}));
+
 
       const csvContent = [
         ['Order ID', 'Customer', 'Category', 'Date', 'Source', 'Amount'],
-        ...formattedData.map(order => [
-          order.orderId,
-          order.customer,
-          getCategoryName(order.category),
-          format(new Date(order.date), 'yyyy-MM-dd'),
-          order.source,
-          order.amount
-        ])
+       ...formattedData.map((order: Order & { amount: string }) => [
+  order.orderId,
+  order.customer,
+  getCategoryName(order.category),
+  format(new Date(order.date), 'yyyy-MM-dd'),
+  order.source,
+  order.amount
+])
+
       ]
         .map(e => e.join(','))
         .join('\n');
