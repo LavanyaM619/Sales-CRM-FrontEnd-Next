@@ -8,6 +8,14 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+// interface User {
+//   _id: string;
+//   userId: string;
+//   name: string;
+//   lastname: string;
+//   email: string;
+//   role: 'user' | 'admin';
+// }
 
 export interface Category {
   _id: string;
