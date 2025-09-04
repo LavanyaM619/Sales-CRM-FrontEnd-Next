@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,16 +19,21 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
 
   // Redirect if already logged in
-  if (user) {
-    router.push('/dashboard');
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/user/dashboard');
+      }
+    }
+  }, [user, router]);
 
   const onSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password);
       toast.success('Login successful!');
-      router.push('/dashboard');
+      // Redirection will happen automatically in useEffect
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed');
     }
@@ -47,10 +52,9 @@ export default function LoginPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
+            {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
@@ -58,25 +62,19 @@ export default function LoginPage() {
                 <input
                   {...register('email', {
                     required: 'Email is required',
-                    pattern: {
-                      value: /^\S+@\S+\.\S+$/,
-                      message: 'Please enter a valid email address'
-                    }
+                    pattern: { value: /^\S+@\S+\.\S+$/, message: 'Please enter a valid email' },
                   })}
                   type="email"
                   className="appearance-none rounded-md relative block w-full pl-10 pr-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                   placeholder="Enter your email"
                 />
               </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-              )}
+              {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
             </div>
 
+            {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
               <div className="mt-1 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" />
@@ -84,10 +82,7 @@ export default function LoginPage() {
                 <input
                   {...register('password', {
                     required: 'Password is required',
-                    minLength: {
-                      value: 6,
-                      message: 'Password must be at least 6 characters'
-                    }
+                    minLength: { value: 6, message: 'Password must be at least 6 characters' },
                   })}
                   type={showPassword ? 'text' : 'password'}
                   className="appearance-none rounded-md relative block w-full pl-10 pr-10 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
@@ -98,19 +93,14 @@ export default function LoginPage() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
+                  {showPassword ? <EyeOff className="h-5 w-5 text-gray-400" /> : <Eye className="h-5 w-5 text-gray-400" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-              )}
+              {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
             </div>
           </div>
 
+          {/* Submit */}
           <div>
             <button
               type="submit"
@@ -124,9 +114,7 @@ export default function LoginPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
-                Sign up
-              </a>
+              <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">Sign up</a>
             </p>
           </div>
         </form>
