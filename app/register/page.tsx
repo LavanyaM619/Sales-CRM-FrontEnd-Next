@@ -27,7 +27,7 @@ export default function RegisterPage() {
 
   // Redirect if already logged in
   if (user) {
-    router.push('/dashboard');
+    router.push('/login');
     return null;
   }
 
