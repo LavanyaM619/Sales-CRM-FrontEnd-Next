@@ -26,21 +26,22 @@ export default function RegisterPage() {
   const password = watch('password');
 
   // Redirect if already logged in
-  if (user) {
-    router.push('/login');
-    return null;
-  }
+  // if (user) {
+  //   router.push('/login');
+  //   return null;
+  // }
 
-  const onSubmit = async (data: RegisterForm) => {
-    try {
-      const { confirmPassword, ...userData } = data;
-      await registerUser(userData); // Type-safe call
-      toast.success('Registration successful!');
-      router.push('/login');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Registration failed');
-    }
-  };
+const onSubmit = async (data: RegisterForm) => {
+  try {
+    const { confirmPassword, ...userData } = data;
+    await registerUser(userData);   // just API call, no setUser
+    toast.success('Registration successful! Please log in.');
+    router.push('/login');          // user goes to login page
+  } catch (error: any) {
+    toast.error(error.response?.data?.message || 'Registration failed');
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

@@ -70,10 +70,10 @@ export default function NewOrderPage() {
       });
 
       toast.success('Order created successfully!');
-      reset(); // ✅ clear form fields
+      reset(); 
 
       setTimeout(() => {
-        router.push('/orders');
+        router.push('/user/dashboard');
       }, 1500);
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Failed to create order');
@@ -277,7 +277,7 @@ export default function NewOrderPage() {
           {/* Actions */}
           <div className="flex justify-end space-x-3">
             <Link
-              href="/orders"
+              href="/login"
               className="bg-white py-2 px-4 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Cancel
