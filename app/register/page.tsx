@@ -36,7 +36,7 @@ export default function RegisterPage() {
       const { confirmPassword, ...userData } = data;
       await registerUser(userData); // Type-safe call
       toast.success('Registration successful!');
-      router.push('/dashboard');
+      router.push('/login');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Registration failed');
     }
