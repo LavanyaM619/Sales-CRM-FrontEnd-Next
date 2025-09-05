@@ -20,7 +20,14 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAdmin = f
         return;
       }
 
+      // 🔹 If page requires admin but user isn’t admin → send them to user dashboard
       if (requireAdmin && !isAdmin) {
+        router.push('//user/dashboard');
+        return;
+      }
+
+      // 🔹 If page is for normal users only, but user is admin → send them to admin dashboard
+      if (!requireAdmin && isAdmin) {
         router.push('/dashboard');
         return;
       }
@@ -35,9 +42,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children, requireAdmin = f
     );
   }
 
-  if (!user || (requireAdmin && !isAdmin)) {
-    return null;
-  }
+  if (!user) return null;
 
   return <>{children}</>;
 };
